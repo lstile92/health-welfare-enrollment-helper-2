@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Health & Welfare Enrollment Helper</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: linear-gradient(135deg, #eef5ff, #f8fbff);
+        color: #243447;
+        min-height: 100vh;
+    }
+
+    .container {
+        max-width: 850px;
+        margin: 40px auto;
+        padding: 20px;
+    }
+
+    .card {
+        background: white;
+        border-radius: 18px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.10);
+        padding: 35px;
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .header h1 {
+        margin: 0 0 10px;
+        color: #1f4e79;
+        font-size: 32px;
+    }
+
+    .header p {
+        margin: 0;
+        color: #667788;
+        font-size: 16px;
+    }
+
+    .progress-container {
+        margin: 25px 0 35px;
+    }
+
+    .progress-bar {
+        height: 8px;
+        background: #e6edf5;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        width: 0%;
+        background: #2f75b5;
+        transition: width 0.3s ease;
+    }
+
+    .question {
+        display: none;
+    }
+
+    .question.active {
+        display: block;
+        animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(8px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .question-number {
+        color: #2f75b5;
+        font-weight: bold;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 8px;
+    }
+
+    .question h2 {
+        margin-top: 0;
+        font-size: 25px;
+        color: #243447;
+    }
+
+    .question-description {
+        color: #687887;
+        line-height: 1.6;
+        margin-bottom: 25px;
+    }
+
+    .options {
+        display: grid;
+        gap: 15px;
+    }
+
+    .option {
+        border: 2px solid #dce5ee;
+        border-radius: 12px;
+        padding: 18px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        background: #fff;
+    }
+
+    .option:hover {
+        border-color: #2f75b5;
+        background: #f5f9fd;
+        transform: translateY(-2px);
+    }
+
+    .option.selected {
+        border-color: #2f75b5;
+        background: #edf5fc;
+    }
+
+    .option-title {
+        font-weight: bold;
+        font-size: 17px;
+        margin-bottom: 5px;
+    }
+
+    .option-description {
+        color: #71808f;
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .button-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 15px;
+        margin-top: 30px;
+    }
+
+    button {
+        border: none;
+        border-radius: 10px;
+        padding: 13px 24px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.2s ease;
+    }
+
+    .btn-primary {
+        background: #2f75b5;
+        color: white;
+        margin-left: auto;
+    }
+
+    .btn-primary:hover {
+        background: #245f91;
+        transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+        background: #e9eef3;
+        color: #425466;
+    }
+
+    .btn-secondary:hover {
+        background: #dce4eb;
+    }
+
+    .btn-start {
+        background: #2f75b5;
+        color: white;
+        padding: 15px 30px;
+        font-size: 17px;
+    }
+
+    .btn-start:hover {
+        background: #245f91;
+    }
+
+    .welcome {
+        text-align: center;
+    }
+
+    .welcome-icon {
+        font-size: 55px;
+        margin-bottom: 15px;
+    }
+
+    .welcome h2 {
+        color: #1f4e79;
+    }
+
+    .welcome p {
+        line-height: 1.7;
+        color: #667788;
+        max-width: 650px;
+        margin: 0 auto 25px;
+    }
+
+    .result {
+        display: none;
+    }
+
+    .result.active {
+        display: block;
+        animation: fadeIn 0.4s ease;
+    }
+
+    .result-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .result-header h2 {
+        color: #1f4e79;
+        font-size: 28px;
+    }
+
+    .result-header p {
+        color: #687887;
+        line-height: 1.6;
+    }
+
+    .alert {
+        border-radius: 12px;
+        padding: 17px;
+        margin: 20px 0;
+        line-height: 1.6;
+    }
+
+    .alert-info {
+        background: #edf5fc;
+        border-left: 5px solid #2f75b5;
+    }
+
+    .alert-warning {
+        background: #fff8e6;
+        border-left: 5px solid #e6a700;
+    }
+
+    .alert-success {
+        background: #edf8f0;
+        border-left: 5px solid #4b9b61;
+    }
+
+    .forms-title {
+        color: #1f4e79;
+        margin-top: 30px;
+    }
+
+    .form-item {
+        display: flex;
+        gap: 14px;
+        padding: 16px;
+        border: 1px solid #dce5ee;
+        border-radius: 10px;
+        margin-bottom: 12px;
+        background: #fbfdff;
+    }
+
+    .check {
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        background: #2f75b5;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-shrink: 0;
+        font-weight: bold;
+    }
+
+    .form-item strong {
+        display: block;
+        margin-bottom: 4px;
+    }
+
+    .form-item span {
+        color: #667788;
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .privacy-note {
+        margin-top: 25px;
+        padding: 15px;
+        border-radius: 10px;
+        background: #f5f5f5;
+        color: #626262;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .footer {
+        text-align: center;
+        margin-top: 25px;
+        color: #8996a3;
+        font-size: 12px;
+    }
+
+    @media (max-width: 600px) {
+        .container {
+            margin: 10px auto;
+            padding: 10px;
+        }
+
+        .card {
+            padding: 22px;
+        }
+
+        .header h1 {
+            font-size: 26px;
+        }
+
+        .question h2 {
+            font-size: 22px;
+        }
+
+        .button-row {
+            flex-direction: column-reverse;
+        }
+
+        .button-row button {
+            width: 100%;
+        }
+
+        .btn-primary {
+            margin-left: 0;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <!-- HEADER -->
+        <div class="header">
+            <h1>Health & Welfare Enrollment Helper</h1>
+            <p>Let's figure out which forms you need.</p>
+        </div>
+
+        <!-- PROGRESS -->
+        <div class="progress-container" id="progressContainer" style="display:none;">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- WELCOME -->
+        <div class="question active" id="welcome">
+
+            <div class="welcome">
+
+                <div class="welcome-icon">📋</div>
+
+                <h2>Welcome!</h2>
+
+                <p>
+                    Answer a few quick questions and this helper will
+                    give you a personalized list of the Health & Welfare
+                    enrollment forms you may need.
+                </p>
+
+                <p>
+                    <strong>Don't worry — this tool does not collect or
+                    store your personal information.</strong>
+                </p>
+
+                <button class="btn-start" onclick="startHelper()">
+                    Get Started
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- QUESTION 1 -->
+        <div class="question" id="question1">
+
+            <div class="question-number">Question 1 of 4</div>
+
+            <h2>Are you a new or returning employee?</h2>
+
+            <p class="question-description">
+                This helps determine which enrollment forms you may need.
+            </p>
+
+            <div class="options">
+
+                <div class="option" onclick="selectOption('employeeType','new',this)">
+                    <div class="option-title">New Employee</div>
+                    <div class="option-description">
+                        I am newly enrolling in Health & Welfare benefits.
+                    </div>
+                </div>
+
+                <div class="option" onclick="selectOption('employeeType','returning',this)">
+                    <div class="option-title">Returning Employee</div>
+                    <div class="option-description">
+                        I was enrolled previously and am returning for another year.
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="button-row">
+                <button class="btn-secondary" onclick="goBack('welcome')">
+                    Back
+                </button>
+
+                <button class="btn-primary" onclick="nextQuestion(2)">
+                    Continue
+                </button>
+            </div>
+
+        </div>
+
+
+        <!-- QUESTION 2 -->
+        <div class="question" id="question2">
+
+            <div class="question-number">Question 2 of 4</div>
+
+            <h2>Do you want health insurance?</h2>
+
+            <p class="question-description">
+                Select the option that best describes what you want to do
+                for the upcoming plan year.
+            </p>
+
+            <div class="options">
+
+                <div class="option" onclick="selectOption('insurance','yes',this)">
+                    <div class="option-title">Yes, I want health insurance</div>
+                    <div class="option-description">
+                        I want to enroll in health insurance through the employer.
+                    </div>
+                </div>
+
+                <div class="option" onclick="selectOption('insurance','no',this)">
+                    <div class="option-title">No, I do not want health insurance</div>
+                    <div class="option-description">
+                        I want to waive employer health insurance.
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="button-row">
+                <button class="btn-secondary" onclick="goBack('question1')">
+                    Back
+                </button>
+
+                <button class="btn-primary" onclick="processInsuranceAnswer()">
+                    Continue
+                </button>
+            </div>
+
+        </div>
+
+
+        <!-- QUESTION 3 -->
+        <div class="question" id="question3">
+
+            <div class="question-number">Question 3 of 4</div>
+
+            <h2>Are you keeping the same health plan?</h2>
+
+            <p class="question-description">
+                This question only applies if you are enrolling in health insurance.
+            </p>
+
+            <div class="options">
+
+                <div class="option" onclick="selectOption('samePlan','yes',this)">
+                    <div class="option-title">Yes, I'm keeping the same plan</div>
+                    <div class="option-description">
+                        I want to stay with the same health insurance plan I had previously.
+                    </div>
+                </div>
+
+                <div class="option" onclick="selectOption('samePlan','no',this)">
+                    <div class="option-title">No, I want to change plans</div>
+                    <div class="option-description">
+                        I want to select a different health insurance plan.
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="button-row">
+                <button class="btn-secondary" onclick="goBack('question2')">
+                    Back
+                </button>
+
+                <button class="btn-primary" onclick="nextQuestion(4)">
+                    Continue
+                </button>
+            </div>
+
+        </div>
+
+
+        <!-- QUESTION 4 -->
+        <div class="question" id="question4">
+
+            <div class="question-number">Question 4 of 4</div>
+
+            <h2>What is your FTE?</h2>
+
+            <p class="question-description">
+                Your FTE helps determine whether you are required to have
+                health insurance or submit a waiver.
+            </p>
+
+            <div class="options">
+
+                <div class="option" onclick="selectOption('fte','over90',this)">
+                    <div class="option-title">0.90 FTE or greater</div>
+                    <div class="option-description">
+                        I work at least 90% FTE.
+                    </div>
+                </div>
+
+                <div class="option" onclick="selectOption('fte','under90',this)">
+                    <div class="option-title">Less than 0.90 FTE</div>
+                    <div class="option-description">
+                        I work less than 90% FTE.
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="button-row">
+                <button class="btn-secondary" onclick="goBack('question3')">
+                    Back
+                </button>
+
+                <button class="btn-primary" onclick="showResults()">
+                    Show My Forms
+                </button>
+            </div>
+
+        </div>
+
+
+        <!-- RESULTS -->
+        <div class="result" id="results">
+
+            <div class="result-header">
+
+                <div class="welcome-icon">✅</div>
+
+                <h2>Your Enrollment Checklist</h2>
+
+                <p>
+                    Based on your answers, here are the forms and documents
+                    you should review.
+                </p>
+
+            </div>
+
+            <div id="resultContent"></div>
+
+            <div class="privacy-note">
+                <strong>Privacy note:</strong>
+                This helper does not ask you to enter your name, employee ID,
+                Social Security number, medical information, or other personal
+                information. It simply helps you determine which forms you may need.
+            </div>
+
+            <div class="button-row">
+
+                <button class="btn-secondary" onclick="restartHelper()">
+                    Start Over
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="footer">
+        Health & Welfare Enrollment Helper
+    </div>
+
+</div>
+
+
+<script>
+
+    /*
+    ==========================================================
+    HEALTH & WELFARE ENROLLMENT HELPER
+    ==========================================================
+
+    This version does NOT collect personal information.
+
+    Answers are stored only temporarily in the browser while
+    the employee uses the helper.
+
+    ==========================================================
+    */
+
+
+    let answers = {
+        employeeType: null,
+        insurance: null,
+        samePlan: null,
+        fte: null
+    };
+
+
+    function startHelper() {
+
+        document.getElementById("progressContainer").style.display = "block";
+
+        showQuestion("question1");
+
+        updateProgress(1);
+
+    }
+
+
+    function selectOption(category, value, element) {
+
+        answers[category] = value;
+
+        const options = element.parentElement.querySelectorAll(".option");
+
+        options.forEach(option => {
+            option.classList.remove("selected");
+        });
+
+        element.classList.add("selected");
+
+    }
+
+
+    function processInsuranceAnswer() {
+
+        if (!answers.insurance) {
+
+            alert("Please select an option before continuing.");
+
+            return;
+        }
+
+
+        /*
+        If employee does NOT want insurance,
+        we skip the "same plan" question.
+        */
+
+        if (answers.insurance === "no") {
+
+            showQuestion("question4");
+
+            updateProgress(4);
+
+        }
+
+        else {
+
+            showQuestion("question3");
+
+            updateProgress(3);
+
+        }
+
+    }
+
+
+    function nextQuestion(number) {
+
+        if (number === 2 && !answers.employeeType) {
+
+            alert("Please select whether you are a new or returning employee.");
+
+            return;
+        }
+
+
+        if (number === 4 && !answers.samePlan) {
+
+            alert("Please select whether you are keeping the same plan.");
+
+            return;
+        }
+
+
+        showQuestion("question" + number);
+
+        updateProgress(number);
+
+    }
+
+
+    function goBack(questionId) {
+
+        showQuestion(questionId);
+
+        if (questionId === "welcome") {
+
+            document.getElementById("progressContainer").style.display = "none";
+
+        }
+
+        else {
+
+            let number = parseInt(questionId.replace("question", ""));
+
+            updateProgress(number);
+
+        }
+
+    }
+
+
+    function showQuestion(id) {
+
+        document.querySelectorAll(".question").forEach(question => {
+
+            question.classList.remove("active");
+
+        });
+
+        document.getElementById("results").classList.remove("active");
+
+        const target = document.getElementById(id);
+
+        if (target) {
+
+            target.classList.add("active");
+
+        }
+
+    }
+
+
+    function updateProgress(number) {
+
+        const fill = document.getElementById("progressFill");
+
+        /*
+        There are four questions.
+        */
+
+        let percentage = (number / 4) * 100;
+
+        fill.style.width = percentage + "%";
+
+    }
+
+
+    function showResults() {
+
+        if (!answers.fte) {
+
+            alert("Please select your FTE before continuing.");
+
+            return;
+
+        }
+
+
+        document.getElementById("progressContainer").style.display = "none";
+
+        document.querySelectorAll(".question").forEach(question => {
+
+            question.classList.remove("active");
+
+        });
+
+        document.getElementById("results").classList.add("active");
+
+
+        const resultContent = document.getElementById("resultContent");
+
+        let html = "";
+
+
+        /*
+        ==========================================================
+        NEW EMPLOYEE
+        ==========================================================
+        */
+
+        if (answers.employeeType === "new") {
+
+            html += `
+                <div class="alert alert-info">
+                    <strong>New Employee:</strong>
+                    You will generally need the enrollment forms for the
+                    upcoming plan year.
+                </div>
+            `;
+
+
+            /*
+            NEW + WANTS INSURANCE
+            */
+
+            if (answers.insurance === "yes") {
+
+                html += `
+                    <h3 class="forms-title">Forms to Review</h3>
+
+                    <div class="form-item">
+                        <div class="check">✓</div>
+                        <div>
+                            <strong>Health & Welfare Enrollment Form</strong>
+                            <span>
+                                Complete the enrollment form and select the
+                                coverage you want.
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-item">
+                        <div class="check">✓</div>
+                        <div>
+                            <strong>Enrollment Form for Your Selected Plan</strong>
+                            <span>
+                                Complete the enrollment form for the specific
+                                health plan you choose, such as Kaiser or
+                                another available plan.
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-item">
+                        <div class="check">✓</div>
+                        <div>
+                            <strong>Acknowledgment Form</strong>
+                            <span>
+                                Complete the applicable acknowledgment form(s)
+                                for the required fiscal year.
+                            </span>
+                        </div>
+                    </div>
+                `;
+
+
+                if (answers.fte === "over90") {
+
+                    html += `
+                        <div class="alert alert-success">
+                            <strong>FTE requirement:</strong>
+                            Because you are 0.90 FTE or greater, you are expected
+                            to have health insurance coverage or otherwise meet
+                            the applicable waiver requirements.
+                        </div>
+
+                        <div class="form-item">
+                            <div class="check">✓</div>
+                            <div>
+                                <strong>Proof of Other Insurance</strong>
+                                <span>
+                                    If applicable and required, provide a copy
+                                    of your insurance card/documentation.
+                                </span>
+                            </div>
+                        </div>
+                    `;
+
+                }
+
+                else {
+
+                    html += `
+                        <div class="alert alert-info">
+                            Because you are less than 0.90 FTE, review the
+                            applicable less-than-full-time requirements.
+                        </div>
+                    `;
+
+                }
+
+            }
+
+
+            /*
+            NEW + DOES NOT WANT INSURANCE
+            */
+
+            else {
+
+                html += `
+                    <h3 class="forms-title">Forms to Review</h3>
+
+                    <div class="form-item">
+                        <div class="check">✓</div>
+                        <div>
+                            <strong>Health & Welfare Waiver Form</strong>
+                            <span>
+                                Complete the waiver indicating that you are
+                                declining employer health insurance.
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-item">
+                        <div class="check">✓</div>
+                        <div>
+                            <strong>SISC Enrollment Form</strong>
+                            <span>
+                                Complete the applicable SISC enrollment form
+                                required for the waiver process.
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-item">
+                        <div class="check">✓</div>
+                        <div>
+                            <strong>Acknowledgment Form</strong>
+                            <span>
+                                Complete the applicable acknowledgment form
+                                for the required fiscal year.
+                            </span>
+                        </div>
+                    </div>
+                `;
+
+
+                if (answers.fte === "over90") {
+
+                    html += `
+                        <div class="alert alert-warning">
+                            <strong>Important:</strong>
+                            At 0.90 FTE or greater, you generally need health
+                            insurance coverage or an appropriate waiver.
+                            Make sure your waiver documentation is complete.
+                        </div>
+                    `;
+
+                }
+
+                else {
+
+                    html += `
+                        <div class="alert alert-info">
+                            Since you are less than 0.90 FTE, make sure you
+                            complete the applicable less-than-full-time waiver
+                            documentation.
+                        </div>
+                    `;
+
+                }
+
+            }
+
+        }
+
+
+        /*
+        ==========================================================
+        RETURNING EMPLOYEE
+        ==========================================================
+        */
+
+        else {
+
+            html += `
+                <div class="alert alert-info">
+                    <strong>Returning Employee:</strong>
+                    Because you are returning, some forms may depend on whether
+                    you are changing your coverage from the previous plan year.
+                </div>
+            `;
+
+
+            /*
+            RETURNING + WANTS INSURANCE
+            */
+
+            if (answers.insurance === "yes") {
+
+                html += `
+                    <h3 class="forms-title">Forms to Review</h3>
+
+                    <div class="form-item">
+                        <div class="check">✓</div>
+                        <div>
+                            <strong>Health & Welfare Enrollment Form</strong>
+                            <span>
+                                Complete the enrollment form for the upcoming
+                                plan year.
+                            </span>
+                        </div>
+                    </div>
+                `;
+
+
+                /*
+                RETURNING + SAME PLAN
+                */
+
+                if (answers.samePlan === "yes") {
+
+                    html += `
+                        <div class="form-item">
+                            <div class="check">✓</div>
+                            <div>
+                                <strong>No New Plan Enrollment Form</strong>
+                                <span>
+                                    If you are keeping the same plan, you generally
+                                    do not need to complete a new plan-specific
+                                    enrollment form unless your organization
+                                    requires one.
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-success">
+                            <strong>Keeping the same plan?</strong><br>
+                            This helper intentionally does not collect your
+                            personal information or automatically fill out a
+                            form containing sensitive information.
+                            Review the enrollment form and confirm that your
+                            existing information is correct.
+                        </div>
+                    `;
+
+                }
+
+
+                /*
+                RETURNING + CHANGING PLAN
+                */
+
+                else {
+
+                    html += `
+                        <div class="form-item">
+                            <div class="check">✓</div>
+                            <div>
+                                <strong>Enrollment Form for Your New Plan</strong>
+                                <span>
+                                    Because you are changing plans, complete the
+                                    enrollment form for the specific plan you
+                                    are selecting.
+                                </span>
+                            </div>
+                        </div>
+                    `;
+
+                }
+
+
+                html += `
+                    <div class="form-item">
+                        <div class="check">✓</div>
+                        <div>
+                            <strong>Current Fiscal Year Acknowledgment Form</strong>
+                            <span>
+                                Complete the acknowledgment form for the
+                                applicable current fiscal year.
+                            </span>
+                        </div>
+                    </div>
+                `;
+
+
+                if (answers.fte === "over90") {
+
+                    html += `
+                        <div class="form-item">
+                            <div class="check">✓</div>
+                            <div>
+                                <strong>Proof of Other Insurance — If Applicable</strong>
+                                <span>
+                                    If you are required to provide proof of other
+                                    coverage, provide the applicable insurance card
+                                    or documentation.
+                                </span>
+                            </div>
+                        </div>
+                    `;
+
+                }
+
+            }
+
+
+            /*
+            RETURNING + DOES NOT WANT INSURANCE
+            */
+
+            else {
+
+                html += `
+                    <h3 class="forms-title">Forms to Review</h3>
+
+                    <div class="form-item">
+                        <div class="check">✓</div>
+                        <div>
+                            <strong>Health & Welfare Waiver Form</strong>
+                            <span>
+                                Complete the waiver for declining employer
+                                health insurance.
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="form-item">
+                        <div class="check">✓</div>
+                        <div>
+                            <strong>Current Fiscal Year Acknowledgment Form</strong>
+                            <span>
+                                Complete the acknowledgment form for the
+                                current fiscal year.
+                            </span>
+                        </div>
+                    </div>
+                `;
+
+
+                if (answers.fte === "under90") {
+
+                    html += `
+                        <div class="form-item">
+                            <div class="check">✓</div>
+                            <div>
+                                <strong>Less-Than-Full-Time Waiver</strong>
+                                <span>
+                                    Complete the applicable waiver form for
+                                    employees working less than 0.90 FTE.
+                                </span>
+                            </div>
+                        </div>
+                    `;
+
+                }
+
+                else {
+
+                    html += `
+                        <div class="alert alert-warning">
+                            <strong>Important:</strong>
+                            Since you are 0.90 FTE or greater and are declining
+                            employer health insurance, make sure your waiver
+                            documentation is complete.
+                        </div>
+                    `;
+
+                }
+
+            }
+
+        }
+
+
+        /*
+        FINAL REMINDER
+        */
+
+        html += `
+            <div class="alert alert-info" style="margin-top:30px;">
+                <strong>Before submitting:</strong>
+                Review each form carefully and make sure all required
+                signatures, dates, and supporting documentation are included.
+            </div>
+        `;
+
+
+        resultContent.innerHTML = html;
+
+    }
+
+
+    function restartHelper() {
+
+        answers = {
+            employeeType: null,
+            insurance: null,
+            samePlan: null,
+            fte: null
+        };
+
+
+        document.querySelectorAll(".option").forEach(option => {
+
+            option.classList.remove("selected");
+
+        });
+
+
+        document.getElementById("results").classList.remove("active");
+
+        document.getElementById("progressContainer").style.display = "none";
+
+        showQuestion("welcome");
+
+    }
+
+</script>
+
+</body>
+</html>
