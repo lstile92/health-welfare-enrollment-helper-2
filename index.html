@@ -582,10 +582,70 @@
         </div>
 
 
-        <!-- QUESTION 4 - FTE -->
+        <!-- QUESTION 4 - HOURS FOR RETURNING EMPLOYEE WHO DECLINES -->
         <div class="question" id="question4">
 
             <div class="question-number" id="questionNumber4">
+                Question 3
+            </div>
+
+            <h2>Do you work 36 hours or more per week?</h2>
+
+            <p class="question-description">
+                Your weekly hours determine which Declination of Coverage form you should review.
+            </p>
+
+            <div class="options">
+
+                <div class="option"
+                     onclick="selectOption('hours','over36',this)">
+
+                    <div class="option-title">
+                        36 hours or more
+                    </div>
+
+                    <div class="option-description">
+                        I work 36 hours or more per week.
+                    </div>
+
+                </div>
+
+                <div class="option"
+                     onclick="selectOption('hours','under36',this)">
+
+                    <div class="option-title">
+                        Less than 36 hours
+                    </div>
+
+                    <div class="option-description">
+                        I work less than 36 hours per week.
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="button-row">
+
+                <button class="btn-secondary"
+                        onclick="goBackFromHours()">
+                    Back
+                </button>
+
+                <button class="btn-primary"
+                        onclick="showResults()">
+                    Show My Forms
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- QUESTION 5 - FTE FOR NEW EMPLOYEE WHO WANTS INSURANCE -->
+        <div class="question" id="question5">
+
+            <div class="question-number" id="questionNumber5">
                 Question 3
             </div>
 
@@ -697,6 +757,7 @@
         employeeType: null,
         insurance: null,
         samePlan: null,
+        hours: null,
         fte: null
     };
 
@@ -759,8 +820,7 @@
             return;
         }
 
-
-        if (number === 4 && !answers.samePlan) {
+        if (number === 3 && !answers.samePlan) {
 
             alert(
                 "Please select whether you are keeping the same plan."
@@ -769,11 +829,26 @@
             return;
         }
 
+        if (number === 4 && !answers.hours) {
+
+            alert(
+                "Please select whether you work 36 hours or more per week."
+            );
+
+            return;
+        }
+
+        if (number === 5 && !answers.fte) {
+
+            alert(
+                "Please select your FTE before continuing."
+            );
+
+            return;
+        }
 
         showQuestion("question" + number);
-
         updateQuestionNumbers();
-
         updateProgress();
 
     }
@@ -807,19 +882,17 @@
             answers.insurance === "yes"
         ) {
 
-            showQuestion("question4");
-
+            showQuestion("question5");
             updateQuestionNumbers();
-
             updateProgress();
-
             return;
+
         }
 
 
         /*
         NEW EMPLOYEE + NO:
-        Skip FTE completely and go directly to Results.
+        Skip all additional questions and go directly to Results.
         */
 
         if (
@@ -828,15 +901,14 @@
         ) {
 
             showResults();
-
             return;
+
         }
 
 
         /*
         RETURNING EMPLOYEE + NO:
-        Skip Same Plan and FTE.
-        Go directly to Results.
+        Ask weekly hours because the declination form depends on hours.
         */
 
         if (
@@ -844,15 +916,18 @@
             answers.insurance === "no"
         ) {
 
-            showResults();
-
+            showQuestion("question4");
+            updateQuestionNumbers();
+            updateProgress();
             return;
+
         }
 
 
         /*
         RETURNING EMPLOYEE + YES:
         Show Same Plan question.
+        No FTE question.
         */
 
         if (
@@ -861,12 +936,25 @@
         ) {
 
             showQuestion("question3");
-
             updateQuestionNumbers();
-
             updateProgress();
 
         }
+
+    }
+
+
+    /*
+    ==========================================================
+    BACK BUTTON FROM HOURS
+    ==========================================================
+    */
+
+    function goBackFromHours() {
+
+        showQuestion("question2");
+        updateQuestionNumbers();
+        updateProgress();
 
     }
 
@@ -879,33 +967,8 @@
 
     function goBackFromFTE() {
 
-        /*
-        Returning employee + insurance:
-        go back to Same Plan.
-        */
-
-        if (
-            answers.employeeType === "returning" &&
-            answers.insurance === "yes"
-        ) {
-
-            showQuestion("question3");
-
-        }
-
-        /*
-        New employee + insurance:
-        go back to Insurance.
-        */
-
-        else {
-
-            showQuestion("question2");
-
-        }
-
+        showQuestion("question2");
         updateQuestionNumbers();
-
         updateProgress();
 
     }
@@ -978,7 +1041,10 @@
         3 questions.
         */
 
-        if (answers.employeeType === "new") {
+        if (
+            answers.employeeType === "new" &&
+            answers.insurance === "yes"
+        ) {
 
             document.getElementById("questionNumber1").textContent =
                 "Question 1 of 3";
@@ -986,15 +1052,34 @@
             document.getElementById("questionNumber2").textContent =
                 "Question 2 of 3";
 
-            document.getElementById("questionNumber4").textContent =
+            document.getElementById("questionNumber5").textContent =
                 "Question 3 of 3";
 
         }
 
 
         /*
-        Returning + insurance:
-        4 questions.
+        New employee + no insurance:
+        Only 2 questions.
+        */
+
+        else if (
+            answers.employeeType === "new" &&
+            answers.insurance === "no"
+        ) {
+
+            document.getElementById("questionNumber1").textContent =
+                "Question 1 of 2";
+
+            document.getElementById("questionNumber2").textContent =
+                "Question 2 of 2";
+
+        }
+
+
+        /*
+        Returning employee + insurance:
+        3 questions.
         */
 
         else if (
@@ -1003,32 +1088,32 @@
         ) {
 
             document.getElementById("questionNumber1").textContent =
-                "Question 1 of 4";
+                "Question 1 of 3";
 
             document.getElementById("questionNumber2").textContent =
-                "Question 2 of 4";
+                "Question 2 of 3";
 
             document.getElementById("questionNumber3").textContent =
-                "Question 3 of 4";
-
-            document.getElementById("questionNumber4").textContent =
-                "Question 4 of 4";
+                "Question 3 of 3";
 
         }
 
 
         /*
-        Returning + no insurance:
-        Only 2 questions.
+        Returning employee + no insurance:
+        3 questions.
         */
 
-        else {
+        else if (
+            answers.employeeType === "returning" &&
+            answers.insurance === "no"
+        ) {
 
             document.getElementById("questionNumber1").textContent =
-                "Question 1 of 2";
+                "Question 1 of 3";
 
             document.getElementById("questionNumber2").textContent =
-                "Question 2 of 2";
+                "Question 2 of 3";
 
             document.getElementById("questionNumber4").textContent =
                 "Question 3 of 3";
@@ -1051,8 +1136,23 @@
 
 
         /*
-        Returning + insurance:
-        4 questions.
+        New employee + no insurance:
+        Only 2 questions.
+        */
+
+        if (
+            answers.employeeType === "new" &&
+            answers.insurance === "no"
+        ) {
+
+            totalQuestions = 2;
+
+        }
+
+
+        /*
+        Returning employee + insurance:
+        3 questions.
         */
 
         if (
@@ -1060,21 +1160,22 @@
             answers.insurance === "yes"
         ) {
 
-            totalQuestions = 4;
+            totalQuestions = 3;
 
         }
 
 
         /*
-        New or returning + no insurance:
-        Only 2 questions.
+        Returning employee + no insurance:
+        3 questions.
         */
 
         if (
+            answers.employeeType === "returning" &&
             answers.insurance === "no"
         ) {
 
-            totalQuestions = 2;
+            totalQuestions = 3;
 
         }
 
@@ -1107,6 +1208,14 @@
 
         }
 
+        else if (
+            document.getElementById("question5").classList.contains("active")
+        ) {
+
+            currentQuestion = totalQuestions;
+
+        }
+
 
         let percentage =
             (currentQuestion / totalQuestions) * 100;
@@ -1126,17 +1235,33 @@
     function showResults() {
 
         /*
-        FTE is ONLY required when the employee
-        wants health insurance.
+        New employee who wants insurance must answer FTE.
+        Returning employee who declines insurance must answer weekly hours.
+        Returning employee who wants insurance does NOT need an FTE question.
         */
 
         if (
+            answers.employeeType === "new" &&
             answers.insurance === "yes" &&
             !answers.fte
         ) {
 
             alert(
                 "Please select your FTE before continuing."
+            );
+
+            return;
+
+        }
+
+        if (
+            answers.employeeType === "returning" &&
+            answers.insurance === "no" &&
+            !answers.hours
+        ) {
+
+            alert(
+                "Please select whether you work 36 hours or more per week."
             );
 
             return;
@@ -1406,35 +1531,6 @@
 
             if (answers.insurance === "yes") {
 
-                html += `
-
-                    <h3 class="forms-title">
-                        Forms to Review
-                    </h3>
-
-
-                    <div class="form-item">
-
-                        <div class="check">✓</div>
-
-                        <div>
-
-                            <strong>
-                                Health & Welfare Enrollment Form
-                            </strong>
-
-                            <span>
-                                Complete the enrollment form for the
-                                upcoming plan year.
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                `;
-
-
                 /*
                 RETURNING + SAME PLAN
                 */
@@ -1443,6 +1539,10 @@
 
                     html += `
 
+                        <h3 class="forms-title">
+                            Forms to Review
+                        </h3>
+
                         <div class="form-item">
 
                             <div class="check">✓</div>
@@ -1450,14 +1550,15 @@
                             <div>
 
                                 <strong>
-                                    No New Plan Enrollment Form
+                                    Health Benefit Guidelines &amp; Acknowledgement
                                 </strong>
 
                                 <span>
-                                    If you are keeping the same plan,
-                                    you generally do not need to complete
-                                    a new plan-specific enrollment form
-                                    unless your organization requires one.
+                                    Please review the
+                                    <a href="https://vcsbsa.org/wp-content/uploads/2026/06/Health-Benefit-Guidelines-Ack-26-27.pdf" target="_blank">
+                                        Health Benefit Guidelines &amp; Acknowledgement
+                                    </a>
+                                    and sign and return the last page.
                                 </span>
 
                             </div>
@@ -1465,18 +1566,44 @@
                         </div>
 
 
-                        <div class="alert alert-success">
+                        <div class="form-item">
 
-                            <strong>
-                                Keeping the same plan?
-                            </strong>
+                            <div class="check">✓</div>
 
-                            <br>
+                            <div>
 
-                            This helper does not collect your personal
-                            information or automatically fill out forms.
-                            Review your enrollment information and confirm
-                            that your existing information is correct.
+                                <strong>
+                                    Pre-filled Enrollment Form
+                                </strong>
+
+                                <span>
+                                    Request from your district/charter the pre-filled form
+                                    showing your current insurance information.
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-item">
+
+                            <div class="check">✓</div>
+
+                            <div>
+
+                                <strong>
+                                    Membership Change Form — If Adding or Removing a Dependent
+                                </strong>
+
+                                <span>
+                                    If you want to add or remove a dependent, complete the
+                                    <a href="https://vcsbsa.org/wp-content/uploads/2023/09/SISC-Membership-Change-Form-2023.pdf" target="_blank">
+                                        Membership Change Form
+                                    </a>.
+                                </span>
+
+                            </div>
 
                         </div>
 
@@ -1493,6 +1620,10 @@
 
                     html += `
 
+                        <h3 class="forms-title">
+                            Forms to Review
+                        </h3>
+
                         <div class="form-item">
 
                             <div class="check">✓</div>
@@ -1500,51 +1631,17 @@
                             <div>
 
                                 <strong>
-                                    Enrollment Form for Your New Plan
+                                    Plan Election Form
                                 </strong>
 
                                 <span>
-                                    Because you are changing plans,
-                                    complete the enrollment form for
-                                    the specific plan you are selecting.
+                                    Complete the plan election form to select your new health insurance plan.
                                 </span>
 
                             </div>
 
                         </div>
 
-                    `;
-
-                }
-
-
-                html += `
-
-                    <div class="form-item">
-
-                        <div class="check">✓</div>
-
-                        <div>
-
-                            <strong>
-                                Current Fiscal Year Acknowledgment Form
-                            </strong>
-
-                            <span>
-                                Complete the acknowledgment form for
-                                the applicable current fiscal year.
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                `;
-
-
-                if (answers.fte === "over90") {
-
-                    html += `
 
                         <div class="form-item">
 
@@ -1553,13 +1650,41 @@
                             <div>
 
                                 <strong>
-                                    Proof of Other Insurance — If Applicable
+                                    Health Benefit Guidelines &amp; Acknowledgement
                                 </strong>
 
                                 <span>
-                                    If you are required to provide proof
-                                    of other coverage, provide the applicable
-                                    insurance card or documentation.
+                                    Please review the
+                                    <a href="https://vcsbsa.org/wp-content/uploads/2026/06/Health-Benefit-Guidelines-Ack-26-27.pdf" target="_blank">
+                                        Health Benefit Guidelines &amp; Acknowledgement
+                                    </a>
+                                    and sign and return the last page.
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-item">
+
+                            <div class="check">✓</div>
+
+                            <div>
+
+                                <strong>
+                                    Anthem Enrollment Form OR Kaiser Enrollment Form
+                                </strong>
+
+                                <span>
+                                    Complete the enrollment form for the plan you are selecting:
+                                    <a href="https://vcsbsa.org/wp-content/uploads/2020/10/FT_20191001_ALL_SISC-HMO-PPO-Enrollment-Form.pdf" target="_blank">
+                                        Anthem Enrollment Form
+                                    </a>
+                                    &nbsp;OR&nbsp;
+                                    <a href="https://vcsbsa.org/wp-content/uploads/2020/10/FT_20191001_ALL_Kaiser-Enrollment-Form.pdf" target="_blank">
+                                        Kaiser Enrollment Form
+                                    </a>.
                                 </span>
 
                             </div>
@@ -1585,26 +1710,101 @@
                         Forms to Review
                     </h3>
 
+                `;
 
-                    <div class="form-item">
 
-                        <div class="check">✓</div>
+                /*
+                36 HOURS OR MORE
+                */
 
-                        <div>
+                if (answers.hours === "over36") {
 
-                            <strong>
-                                Health & Welfare Waiver Form
-                            </strong>
+                    html += `
 
-                            <span>
-                                Complete the waiver for declining
-                                employer health insurance.
-                            </span>
+                        <div class="form-item">
+
+                            <div class="check">✓</div>
+
+                            <div>
+
+                                <strong>
+                                    Declination of Coverage Form
+                                </strong>
+
+                                <span>
+                                    Complete the
+                                    <a href="https://vcsbsa.org/wp-content/uploads/2026/08/WABE-Employee-Election-Form-2026-27.pdf" target="_blank">
+                                        WABE Employee Election Form 2026-27
+                                    </a>.
+                                </span>
+
+                            </div>
 
                         </div>
 
-                    </div>
 
+                        <div class="form-item">
+
+                            <div class="check">✓</div>
+
+                            <div>
+
+                                <strong>
+                                    Copy of Your Insurance Card
+                                </strong>
+
+                                <span>
+                                    Provide a copy of your insurance card.
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    `;
+
+                }
+
+
+                /*
+                LESS THAN 36 HOURS
+                */
+
+                else {
+
+                    html += `
+
+                        <div class="form-item">
+
+                            <div class="check">✓</div>
+
+                            <div>
+
+                                <strong>
+                                    Declination of Coverage Form
+                                </strong>
+
+                                <span>
+                                    Complete the
+                                    <a href="https://vcsbsa.org/wp-content/uploads/2023/06/Declination-of-Coverage-less-FT-1.pdf" target="_blank">
+                                        Declination of Coverage — Less Than Full-Time
+                                    </a>.
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    `;
+
+                }
+
+
+                /*
+                ACKNOWLEDGEMENT FOR ALL RETURNING EMPLOYEES WHO DECLINE
+                */
+
+                html += `
 
                     <div class="form-item">
 
@@ -1613,12 +1813,15 @@
                         <div>
 
                             <strong>
-                                Current Fiscal Year Acknowledgment Form
+                                Health Benefit Guidelines &amp; Acknowledgement
                             </strong>
 
                             <span>
-                                Complete the acknowledgment form for
-                                the current fiscal year.
+                                Please review the
+                                <a href="https://vcsbsa.org/wp-content/uploads/2026/06/Health-Benefit-Guidelines-Ack-26-27.pdf" target="_blank">
+                                    Health Benefit Guidelines &amp; Acknowledgement
+                                </a>
+                                and sign and return the last page.
                             </span>
 
                         </div>
@@ -1672,6 +1875,7 @@
             employeeType: null,
             insurance: null,
             samePlan: null,
+            hours: null,
             fte: null
 
         };
