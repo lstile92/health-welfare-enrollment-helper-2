@@ -345,6 +345,33 @@
             margin-left: 0;
         }
     }
+[hidden] { display: none !important; }
+.calculator-label { display: block; font-weight: bold; margin: 20px 0 8px; }
+.calculator-select { width: 100%; min-width: 0; padding: 13px; border: 1px solid #cbd5df; border-radius: 8px; font: 16px Arial, sans-serif; background: #fff; color: #243447; text-overflow: ellipsis; }
+.calculator-note { color: #667788; font-size: 13px; line-height: 1.5; margin: 8px 0 0; }
+.calculator-estimate { background: #eef5fb; padding: 24px; border-radius: 12px; margin-top: 24px; }
+.calculator-estimate h3 { margin: 0 0 14px; color: #1f4e79; }
+.calculator-row { display: flex; justify-content: space-between; gap: 16px; padding: 12px 0; border-bottom: 1px solid #d5e0e8; }
+.calculator-row strong { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.calculator-total { font-weight: bold; }
+.calculator-highlight { font-size: 21px; font-weight: bold; color: #1f4e79; border: 0; }
+.calculator-submit { width: 100%; margin: 24px 0 0; }
+.calculator-footer { margin-top: 28px; padding-top: 22px; border-top: 1px solid #dce5ee; }
+.calculator-footer h3 { margin: 0; color: #1f4e79; }
+.calculator-footer .button-row { margin-top: 18px; }
+.calculator-error { color: #a12323; }
+.option { font-family: inherit; font-weight: normal; text-align: left; }
+.option-title, .option-description { display: block; }
+.card, .form-item > div { min-width: 0; overflow-wrap: anywhere; }
+@media (max-width: 600px) {
+  .calculator-estimate { padding: 18px; }
+  .calculator-row { flex-wrap: wrap; gap: 6px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .question.active, .result.active { animation: none; }
+  .progress-fill, .option, button { transition: none; }
+}
+
 </style>
 </head>
 
@@ -413,31 +440,29 @@
 
             <div class="options">
 
-                <div class="option"
-                     onclick="selectOption('employeeType','new',this)">
+                <button type="button" class="option" onclick="selectOption('employeeType','new',this)">
 
-                    <div class="option-title">
+                    <span class="option-title">
                         New Employee
-                    </div>
+                    </span>
 
-                    <div class="option-description">
+                    <span class="option-description">
                         I am newly enrolling in Health & Welfare benefits.
-                    </div>
+                    </span>
 
-                </div>
+                </button>
 
-                <div class="option"
-                     onclick="selectOption('employeeType','returning',this)">
+                <button type="button" class="option" onclick="selectOption('employeeType','returning',this)">
 
-                    <div class="option-title">
+                    <span class="option-title">
                         Returning Employee
-                    </div>
+                    </span>
 
-                    <div class="option-description">
+                    <span class="option-description">
                         I was enrolled previously and am returning for another year.
-                    </div>
+                    </span>
 
-                </div>
+                </button>
 
             </div>
 
@@ -474,31 +499,29 @@
 
             <div class="options">
 
-                <div class="option"
-                     onclick="selectOption('insurance','yes',this)">
+                <button type="button" class="option" onclick="selectOption('insurance','yes',this)">
 
-                    <div class="option-title">
+                    <span class="option-title">
                         Yes, I want health insurance
-                    </div>
+                    </span>
 
-                    <div class="option-description">
+                    <span class="option-description">
                         I want to enroll in health insurance through the employer.
-                    </div>
+                    </span>
 
-                </div>
+                </button>
 
-                <div class="option"
-                     onclick="selectOption('insurance','no',this)">
+                <button type="button" class="option" onclick="selectOption('insurance','no',this)">
 
-                    <div class="option-title">
+                    <span class="option-title">
                         No, I do not want health insurance
-                    </div>
+                    </span>
 
-                    <div class="option-description">
+                    <span class="option-description">
                         I want to waive employer health insurance.
-                    </div>
+                    </span>
 
-                </div>
+                </button>
 
             </div>
 
@@ -536,32 +559,30 @@
 
             <div class="options">
 
-                <div class="option"
-                     onclick="selectOption('samePlan','yes',this)">
+                <button type="button" class="option" onclick="selectOption('samePlan','yes',this)">
 
-                    <div class="option-title">
+                    <span class="option-title">
                         Yes, I'm keeping the same plan
-                    </div>
+                    </span>
 
-                    <div class="option-description">
+                    <span class="option-description">
                         I want to stay with the same health insurance plan
                         I had previously.
-                    </div>
+                    </span>
 
-                </div>
+                </button>
 
-                <div class="option"
-                     onclick="selectOption('samePlan','no',this)">
+                <button type="button" class="option" onclick="selectOption('samePlan','no',this)">
 
-                    <div class="option-title">
+                    <span class="option-title">
                         No, I want to change plans
-                    </div>
+                    </span>
 
-                    <div class="option-description">
+                    <span class="option-description">
                         I want to select a different health insurance plan.
-                    </div>
+                    </span>
 
-                </div>
+                </button>
 
             </div>
 
@@ -573,8 +594,8 @@
                 </button>
 
                 <button class="btn-primary"
-                        onclick="showResults()">
-                    Show My Forms
+                        id="planContinue" onclick="processPlanAnswer()">
+                    Continue
                 </button>
 
             </div>
@@ -597,31 +618,29 @@
 
             <div class="options">
 
-                <div class="option"
-                     onclick="selectOption('hours','over36',this)">
+                <button type="button" class="option" onclick="selectOption('hours','over36',this)">
 
-                    <div class="option-title">
+                    <span class="option-title">
                         36 hours or more
-                    </div>
+                    </span>
 
-                    <div class="option-description">
+                    <span class="option-description">
                         I work 36 hours or more per week.
-                    </div>
+                    </span>
 
-                </div>
+                </button>
 
-                <div class="option"
-                     onclick="selectOption('hours','under36',this)">
+                <button type="button" class="option" onclick="selectOption('hours','under36',this)">
 
-                    <div class="option-title">
+                    <span class="option-title">
                         Less than 36 hours
-                    </div>
+                    </span>
 
-                    <div class="option-description">
+                    <span class="option-description">
                         I work less than 36 hours per week.
-                    </div>
+                    </span>
 
-                </div>
+                </button>
 
             </div>
 
@@ -642,65 +661,64 @@
         </div>
 
 
-        <!-- QUESTION 5 - FTE FOR NEW EMPLOYEE WHO WANTS INSURANCE -->
-        <div class="question" id="question5">
+<section class="question" id="costCalculator" aria-labelledby="calculatorTitle">
+  <div class="question-number" id="calculatorStep">Cost calculator · 2026–27</div>
+  <h2 id="calculatorTitle">Calculate Your Health Insurance Cost</h2>
+  <p class="question-description">Choose your district and plans to estimate your annual insurance cost and the amount above your district’s cap.</p>
+  <aside class="alert alert-info" aria-label="FTE disclaimer">
+    <strong>This calculator is built for employees with an FTE of 0.9 or greater, which means working 36 hours or more per week.</strong>
+    If you work fewer than 36 hours per week, your insurance costs will vary.
+  </aside>
 
-            <div class="question-number" id="questionNumber5">
-                Question 3
-            </div>
+  <label class="calculator-label" for="calcDistrict">1. Select your district</label>
+  <select class="calculator-select" id="calcDistrict" aria-describedby="calcCap">
+    <option value="">Choose a district...</option>
+    <option value="Briggs">Briggs</option>
+    <option value="Mesa">Mesa</option>
+    <option value="Mupu">Mupu</option>
+    <option value="Somis">Somis</option>
+  </select>
+  <p class="calculator-note" id="calcCap"></p>
 
-            <h2>What is your FTE?</h2>
+  <label class="calculator-label" for="calcCurrentPlan">2. Current plan — July–September</label>
+  <select class="calculator-select" id="calcCurrentPlan"></select>
+  <div id="calcCurrentCoverageBox" hidden>
+    <label class="calculator-label" for="calcCurrentCoverage">MEC 2-Tier coverage — July–September</label>
+    <select class="calculator-select" id="calcCurrentCoverage">
+      <option value="EE">Employee Only (EE)</option>
+      <option value="EE+CH">Employee + Child(ren) (EE+CH)</option>
+    </select>
+  </div>
 
-            <p class="question-description">
-                Your FTE helps determine whether you are required to have
-                health insurance or submit a waiver.
-            </p>
+  <label class="calculator-label" for="calcNewPlan">3. Desired plan — October–June</label>
+  <select class="calculator-select" id="calcNewPlan"></select>
+  <div id="calcNewCoverageBox" hidden>
+    <label class="calculator-label" for="calcNewCoverage">MEC 2-Tier coverage — October–June</label>
+    <select class="calculator-select" id="calcNewCoverage">
+      <option value="EE">Employee Only (EE)</option>
+      <option value="EE+CH">Employee + Child(ren) (EE+CH)</option>
+    </select>
+  </div>
 
-            <div class="options">
+  <label class="calculator-label" for="calcVision">4. Vision plan — October–June</label>
+  <select class="calculator-select" id="calcVision" aria-describedby="calcVisionNote">
+    <option value="VSP">VSP — $18.10/month (included)</option>
+    <option value="XP">XP Vision — $23.60/month (+$5.50)</option>
+  </select>
+  <p class="calculator-note" id="calcVisionNote" aria-live="polite">VSP is already included in the plan costs. No additional charge.</p>
 
-                <div class="option"
-                     onclick="selectOption('fte','over90',this)">
+  <button type="button" class="btn-primary calculator-submit" id="calculateCost">Calculate My Cost</button>
+  <div class="calculator-estimate" id="calcEstimate" aria-live="polite" hidden></div>
+  <p class="calculator-note" style="margin-top:20px">For calculation purposes only. Actual cost may differ. If the cost of insurance is less than the applicable cap, the district pays the cost instead of the cap.</p>
 
-                    <div class="option-title">
-                        0.90 FTE or greater
-                    </div>
-
-                    <div class="option-description">
-                        I work at least 90% FTE.
-                    </div>
-
-                </div>
-
-                <div class="option"
-                     onclick="selectOption('fte','under90',this)">
-
-                    <div class="option-title">
-                        Less than 0.90 FTE
-                    </div>
-
-                    <div class="option-description">
-                        I work less than 90% FTE.
-                    </div>
-
-                </div>
-
-            </div>
-
-            <div class="button-row">
-
-                <button class="btn-secondary"
-                        onclick="goBackFromFTE()">
-                    Back
-                </button>
-
-                <button class="btn-primary"
-                        onclick="showResults()">
-                    Show My Forms
-                </button>
-
-            </div>
-
-        </div>
+  <div class="calculator-footer">
+    <h3>Ready to review your forms?</h3>
+    <div class="button-row">
+      <button type="button" class="btn-secondary" onclick="goBackFromCalculator()">Back</button>
+      <button type="button" class="btn-primary" onclick="showResults()">Continue to Forms to Review</button>
+    </div>
+  </div>
+</section>
 
 
         <!-- RESULTS -->
@@ -733,6 +751,8 @@
 
             <div class="button-row">
 
+                <button type="button" class="btn-secondary" id="backToCalculator" onclick="showCalculator()" hidden>Back to Calculator</button>
+
                 <button class="btn-secondary"
                         onclick="restartHelper()">
                     Start Over
@@ -757,8 +777,7 @@
         employeeType: null,
         insurance: null,
         samePlan: null,
-        hours: null,
-        fte: null
+        hours: null
     };
 
 
@@ -788,18 +807,23 @@
     */
 
     function selectOption(category, value, element) {
-
+        if (answers[category] !== value) {
+            const dependentQuestions = category === "employeeType"
+                ? {insurance:"question2", samePlan:"question3", hours:"question4"}
+                : category === "insurance" ? {samePlan:"question3", hours:"question4"} : {};
+            Object.entries(dependentQuestions).forEach(([answer, questionId]) => {
+                answers[answer] = null;
+                document.getElementById(questionId).querySelectorAll(".option").forEach(option => option.classList.remove("selected"));
+            });
+            if (category === "employeeType" || category === "insurance") resetCalculator();
+        }
         answers[category] = value;
-
-        const options =
-            element.parentElement.querySelectorAll(".option");
-
-        options.forEach(option => {
-            option.classList.remove("selected");
-        });
-
+        element.parentElement.querySelectorAll(".option").forEach(option => option.classList.remove("selected"));
         element.classList.add("selected");
-
+        document.getElementById("planContinue").textContent = answers.samePlan === "no"
+            ? "Continue to Calculator" : answers.samePlan === "yes" ? "Show My Forms" : "Continue";
+        updateQuestionNumbers();
+        updateProgress();
     }
 
 
@@ -810,47 +834,13 @@
     */
 
     function nextQuestion(number) {
-
         if (number === 2 && !answers.employeeType) {
-
-            alert(
-                "Please select whether you are a new or returning employee."
-            );
-
+            alert("Please select whether you are a new or returning employee.");
             return;
         }
-
-        if (number === 3 && !answers.samePlan) {
-
-            alert(
-                "Please select whether you are keeping the same plan."
-            );
-
-            return;
-        }
-
-        if (number === 4 && !answers.hours) {
-
-            alert(
-                "Please select whether you work 36 hours or more per week."
-            );
-
-            return;
-        }
-
-        if (number === 5 && !answers.fte) {
-
-            alert(
-                "Please select your FTE before continuing."
-            );
-
-            return;
-        }
-
         showQuestion("question" + number);
         updateQuestionNumbers();
         updateProgress();
-
     }
 
 
@@ -861,86 +851,18 @@
     */
 
     function processInsuranceAnswer() {
-
         if (!answers.insurance) {
-
-            alert(
-                "Please select whether you want health insurance."
-            );
-
+            alert("Please select whether you want health insurance.");
             return;
         }
-
-
-        /*
-        NEW EMPLOYEE + YES:
-        Go to FTE.
-        */
-
-        if (
-            answers.employeeType === "new" &&
-            answers.insurance === "yes"
-        ) {
-
-            showQuestion("question5");
-            updateQuestionNumbers();
-            updateProgress();
+        if (answers.employeeType === "new") {
+            if (answers.insurance === "yes") showCalculator();
+            else showResults();
             return;
-
         }
-
-
-        /*
-        NEW EMPLOYEE + NO:
-        Skip all additional questions and go directly to Results.
-        */
-
-        if (
-            answers.employeeType === "new" &&
-            answers.insurance === "no"
-        ) {
-
-            showResults();
-            return;
-
-        }
-
-
-        /*
-        RETURNING EMPLOYEE + NO:
-        Ask weekly hours because the declination form depends on hours.
-        */
-
-        if (
-            answers.employeeType === "returning" &&
-            answers.insurance === "no"
-        ) {
-
-            showQuestion("question4");
-            updateQuestionNumbers();
-            updateProgress();
-            return;
-
-        }
-
-
-        /*
-        RETURNING EMPLOYEE + YES:
-        Show Same Plan question.
-        No FTE question.
-        */
-
-        if (
-            answers.employeeType === "returning" &&
-            answers.insurance === "yes"
-        ) {
-
-            showQuestion("question3");
-            updateQuestionNumbers();
-            updateProgress();
-
-        }
-
+        showQuestion(answers.insurance === "yes" ? "question3" : "question4");
+        updateQuestionNumbers();
+        updateProgress();
     }
 
 
@@ -961,16 +883,43 @@
 
     /*
     ==========================================================
-    BACK BUTTON FROM FTE
+    PLAN CHOICE AND CALCULATOR NAVIGATION
     ==========================================================
     */
 
-    function goBackFromFTE() {
+    function processPlanAnswer() {
+        if (!answers.samePlan) {
+            alert("Please select whether you are keeping the same plan.");
+            return;
+        }
+        if (answers.samePlan === "no") showCalculator();
+        else showResults();
+    }
 
-        showQuestion("question2");
+    function usesCalculator() {
+        return answers.insurance === "yes" &&
+            (answers.employeeType === "new" || answers.samePlan === "no");
+    }
+
+    function showCalculator() {
+        document.getElementById("progressContainer").style.display = "block";
+        showQuestion("costCalculator");
         updateQuestionNumbers();
         updateProgress();
+    }
 
+    function goBackFromCalculator() {
+        goBack(answers.employeeType === "new" ? "question2" : "question3");
+    }
+
+    function enrollmentSteps() {
+        const steps = ["question1", "question2"];
+        if (answers.employeeType === "returning") {
+            steps.push(answers.insurance === "no" ? "question4" : "question3");
+        }
+        if (usesCalculator()) steps.push("costCalculator");
+        steps.push("results");
+        return steps;
     }
 
 
@@ -1035,91 +984,12 @@
     */
 
     function updateQuestionNumbers() {
-
-        /*
-        New employee + insurance:
-        3 questions.
-        */
-
-        if (
-            answers.employeeType === "new" &&
-            answers.insurance === "yes"
-        ) {
-
-            document.getElementById("questionNumber1").textContent =
-                "Question 1 of 3";
-
-            document.getElementById("questionNumber2").textContent =
-                "Question 2 of 3";
-
-            document.getElementById("questionNumber5").textContent =
-                "Question 3 of 3";
-
-        }
-
-
-        /*
-        New employee + no insurance:
-        Only 2 questions.
-        */
-
-        else if (
-            answers.employeeType === "new" &&
-            answers.insurance === "no"
-        ) {
-
-            document.getElementById("questionNumber1").textContent =
-                "Question 1 of 2";
-
-            document.getElementById("questionNumber2").textContent =
-                "Question 2 of 2";
-
-        }
-
-
-        /*
-        Returning employee + insurance:
-        3 questions.
-        */
-
-        else if (
-            answers.employeeType === "returning" &&
-            answers.insurance === "yes"
-        ) {
-
-            document.getElementById("questionNumber1").textContent =
-                "Question 1 of 3";
-
-            document.getElementById("questionNumber2").textContent =
-                "Question 2 of 3";
-
-            document.getElementById("questionNumber3").textContent =
-                "Question 3 of 3";
-
-        }
-
-
-        /*
-        Returning employee + no insurance:
-        3 questions.
-        */
-
-        else if (
-            answers.employeeType === "returning" &&
-            answers.insurance === "no"
-        ) {
-
-            document.getElementById("questionNumber1").textContent =
-                "Question 1 of 3";
-
-            document.getElementById("questionNumber2").textContent =
-                "Question 2 of 3";
-
-            document.getElementById("questionNumber4").textContent =
-                "Question 3 of 3";
-
-        }
-
+        const steps = enrollmentSteps();
+        const labels = {question1:"questionNumber1", question2:"questionNumber2", question3:"questionNumber3", question4:"questionNumber4", costCalculator:"calculatorStep"};
+        steps.forEach((step, index) => {
+            if (labels[step]) document.getElementById(labels[step]).textContent =
+                "Step " + (index + 1) + " of " + steps.length + (step === "costCalculator" ? " · 2026–27" : "");
+        });
     }
 
 
@@ -1130,99 +1000,10 @@
     */
 
     function updateProgress() {
-
-        let currentQuestion = 1;
-        let totalQuestions = 3;
-
-
-        /*
-        New employee + no insurance:
-        Only 2 questions.
-        */
-
-        if (
-            answers.employeeType === "new" &&
-            answers.insurance === "no"
-        ) {
-
-            totalQuestions = 2;
-
-        }
-
-
-        /*
-        Returning employee + insurance:
-        3 questions.
-        */
-
-        if (
-            answers.employeeType === "returning" &&
-            answers.insurance === "yes"
-        ) {
-
-            totalQuestions = 3;
-
-        }
-
-
-        /*
-        Returning employee + no insurance:
-        3 questions.
-        */
-
-        if (
-            answers.employeeType === "returning" &&
-            answers.insurance === "no"
-        ) {
-
-            totalQuestions = 3;
-
-        }
-
-
-        /*
-        Determine current question.
-        */
-
-        if (
-            document.getElementById("question2").classList.contains("active")
-        ) {
-
-            currentQuestion = 2;
-
-        }
-
-        else if (
-            document.getElementById("question3").classList.contains("active")
-        ) {
-
-            currentQuestion = 3;
-
-        }
-
-        else if (
-            document.getElementById("question4").classList.contains("active")
-        ) {
-
-            currentQuestion = totalQuestions;
-
-        }
-
-        else if (
-            document.getElementById("question5").classList.contains("active")
-        ) {
-
-            currentQuestion = totalQuestions;
-
-        }
-
-
-        let percentage =
-            (currentQuestion / totalQuestions) * 100;
-
-        document.getElementById("progressFill").style.width =
-            percentage + "%";
-
+        const steps = enrollmentSteps();
+        const current = document.querySelector(".question.active");
+        const index = current ? steps.indexOf(current.id) : -1;
+        document.getElementById("progressFill").style.width = index < 0 ? "0%" : ((index + 1) / steps.length * 100) + "%";
     }
 
 
@@ -1234,24 +1015,9 @@
 
     function showResults() {
 
-        /*
-        New employee who wants insurance must answer FTE.
-        Returning employee who declines insurance must answer weekly hours.
-        Returning employee who wants insurance does NOT need an FTE question.
-        */
-
-        if (
-            answers.employeeType === "new" &&
-            answers.insurance === "yes" &&
-            !answers.fte
-        ) {
-
-            alert(
-                "Please select your FTE before continuing."
-            );
-
+        if (answers.employeeType === "returning" && answers.insurance === "yes" && !answers.samePlan) {
+            alert("Please select whether you are keeping the same plan.");
             return;
-
         }
 
         if (
@@ -1384,41 +1150,6 @@
 
                 `;
 
-
-                if (answers.fte === "over90") {
-
-                    html += `
-
-                        <div class="alert alert-success">
-
-                            <strong>FTE requirement:</strong>
-
-                            Because you are 0.90 FTE or greater,
-                            you are expected to have health insurance
-                            coverage or otherwise meet the applicable
-                            waiver requirements.
-
-                        </div>
-
-                    `;
-
-                }
-
-                else {
-
-                    html += `
-
-                        <div class="alert alert-info">
-
-                            Because you are less than 0.90 FTE,
-                            review the applicable less-than-full-time
-                            requirements.
-
-                        </div>
-
-                    `;
-
-                }
 
             }
 
@@ -1848,6 +1579,7 @@
 
 
         resultContent.innerHTML = html;
+        document.getElementById("backToCalculator").hidden = !usesCalculator();
 
     }
 
@@ -1859,35 +1591,116 @@
     */
 
     function restartHelper() {
-
-        answers = {
-
-            employeeType: null,
-            insurance: null,
-            samePlan: null,
-            hours: null,
-            fte: null
-
-        };
-
-
-        document.querySelectorAll(".option").forEach(option => {
-
-            option.classList.remove("selected");
-
-        });
-
-
+        answers = {employeeType:null, insurance:null, samePlan:null, hours:null};
+        document.querySelectorAll(".option").forEach(option => option.classList.remove("selected"));
         document.getElementById("results").classList.remove("active");
-
-        document.getElementById("progressContainer").style.display =
-            "none";
-
-
+        document.getElementById("resultContent").innerHTML = "";
+        document.getElementById("backToCalculator").hidden = true;
+        document.getElementById("planContinue").textContent = "Continue";
+        document.getElementById("progressContainer").style.display = "none";
+        resetCalculator();
         showQuestion("welcome");
-
     }
 
+
+    // Monthly plan costs include VSP. XP replaces VSP from October onward.
+    const COST_DATA = {
+        caps: {Briggs:15486.80, Mesa:16097.80, Mupu:12000.00, Somis:13000.00},
+        vision: {VSP:18.10, XP:23.60},
+        plans: {
+            "Anthem Blue Cross 100%-D":[2181.70,2380.70],
+            "Anthem Blue Cross  90%-G":[2035.70,2221.70],
+            "Anthem Blue Cross  80%-G":[1875.70,2045.70],
+            "Anthem Blue Cross  80%-L":[1620.70,1770.70],
+            "Proactive Care Plan-Platinum":[0,2045.70],
+            "Kaiser":[1843.70,1967.70],
+            "Minimum Value (HSA $5,000)":[1317.70,1437.70],
+            "MEC 2-Tier": {EE:[665.00,731.00], "EE+CH":[1055.00,1160.00]}
+        }
+    };
+    const costSelects = {
+        district: document.getElementById("calcDistrict"),
+        current: document.getElementById("calcCurrentPlan"),
+        desired: document.getElementById("calcNewPlan"),
+        currentCoverage: document.getElementById("calcCurrentCoverage"),
+        newCoverage: document.getElementById("calcNewCoverage"),
+        vision: document.getElementById("calcVision")
+    };
+
+    function moneyFromCents(cents) {
+        return (cents / 100).toLocaleString("en-US", {style:"currency", currency:"USD"});
+    }
+
+    function monthlyCents(plan, period, coverage) {
+        const rate = plan === "MEC 2-Tier"
+            ? COST_DATA.plans[plan][coverage][period] : COST_DATA.plans[plan][period];
+        return Math.round(rate * 100);
+    }
+
+    function refreshCalculator() {
+        document.getElementById("calcCap").textContent = costSelects.district.value
+            ? "Full-time annual CAP: " + moneyFromCents(Math.round(COST_DATA.caps[costSelects.district.value] * 100)) : "";
+        document.getElementById("calcCurrentCoverageBox").hidden = costSelects.current.value !== "MEC 2-Tier";
+        document.getElementById("calcNewCoverageBox").hidden = costSelects.desired.value !== "MEC 2-Tier";
+        document.getElementById("calcVisionNote").textContent = costSelects.vision.value === "XP"
+            ? "XP Vision adds $5.50/month for October–June ($49.50 total). July–September remains on VSP."
+            : "VSP is already included in the plan costs. No additional charge.";
+        if (!document.getElementById("calcEstimate").hidden) calculateInsuranceCost();
+    }
+
+    function resetCalculator() {
+        costSelects.district.value = "";
+        costSelects.current.value = "";
+        costSelects.desired.value = "";
+        costSelects.currentCoverage.value = "EE";
+        costSelects.newCoverage.value = "EE";
+        costSelects.vision.value = "VSP";
+        const result = document.getElementById("calcEstimate");
+        result.hidden = true;
+        result.innerHTML = "";
+        result.removeAttribute("role");
+        refreshCalculator();
+    }
+
+    function calculateInsuranceCost() {
+        const result = document.getElementById("calcEstimate");
+        result.hidden = false;
+        if (!costSelects.district.value || !costSelects.current.value || !costSelects.desired.value) {
+            result.setAttribute("role", "alert");
+            result.innerHTML = '<h3>Please complete all selections.</h3><p class="calculator-error">Select a district, current plan, and desired plan.</p>';
+            return;
+        }
+        result.removeAttribute("role");
+        const costA = monthlyCents(costSelects.current.value, 0, costSelects.currentCoverage.value) * 3;
+        const adjustment = (Math.round(COST_DATA.vision[costSelects.vision.value] * 100) - Math.round(COST_DATA.vision.VSP * 100)) * 9;
+        const costB = monthlyCents(costSelects.desired.value, 1, costSelects.newCoverage.value) * 9 + adjustment;
+        const annual = costA + costB;
+        const cap = Math.round(COST_DATA.caps[costSelects.district.value] * 100);
+        const over = Math.max(0, annual - cap);
+        result.innerHTML = `
+            <h3>Your Estimated Cost</h3>
+            <div class="calculator-row"><span>District CAP</span><strong>${moneyFromCents(cap)}</strong></div>
+            <div class="calculator-row"><span>July–September</span><strong>${moneyFromCents(costA)}</strong></div>
+            <div class="calculator-row"><span>October–June</span><strong>${moneyFromCents(costB)}</strong></div>
+            ${adjustment ? `<p class="calculator-note">October–June includes the $49.50 XP Vision upgrade.</p>` : ""}
+            <div class="calculator-row calculator-total"><span>Annual insurance cost</span><strong>${moneyFromCents(annual)}</strong></div>
+            <div class="calculator-row"><span>Amount over CAP</span><strong>${moneyFromCents(over)}</strong></div>
+            <div class="calculator-row calculator-highlight"><span>Estimated monthly over-CAP cost</span><strong>${moneyFromCents(over / 10)}</strong></div>
+            <p class="calculator-note">Amount over CAP divided across 10 payments.</p>
+        `;
+    }
+
+    [costSelects.current, costSelects.desired].forEach(select => {
+        select.innerHTML = '<option value="">Choose a plan...</option>';
+        Object.keys(COST_DATA.plans).forEach(plan => {
+            const option = document.createElement("option");
+            option.value = plan;
+            option.textContent = plan;
+            select.appendChild(option);
+        });
+    });
+    Object.values(costSelects).forEach(select => select.addEventListener("change", refreshCalculator));
+    document.getElementById("calculateCost").addEventListener("click", calculateInsuranceCost);
 </script>
 
 </body>
