@@ -603,7 +603,7 @@
         </div>
 
 
-        <!-- QUESTION 4 - HOURS FOR RETURNING EMPLOYEE WHO DECLINES -->
+        <!-- QUESTION 4 - HOURS FOR EMPLOYEE WHO DECLINES -->
         <div class="question" id="question4">
 
             <div class="question-number" id="questionNumber4">
@@ -857,7 +857,9 @@
         }
         if (answers.employeeType === "new") {
             if (answers.insurance === "yes") showCalculator();
-            else showResults();
+            else showQuestion("question4");
+            updateQuestionNumbers();
+            updateProgress();
             return;
         }
         showQuestion(answers.insurance === "yes" ? "question3" : "question4");
@@ -914,8 +916,10 @@
 
     function enrollmentSteps() {
         const steps = ["question1", "question2"];
-        if (answers.employeeType === "returning") {
-            steps.push(answers.insurance === "no" ? "question4" : "question3");
+        if (answers.insurance === "no") {
+            steps.push("question4");
+        } else if (answers.employeeType === "returning") {
+            steps.push("question3");
         }
         if (usesCalculator()) steps.push("costCalculator");
         steps.push("results");
@@ -1021,7 +1025,6 @@
         }
 
         if (
-            answers.employeeType === "returning" &&
             answers.insurance === "no" &&
             !answers.hours
         ) {
@@ -1063,17 +1066,6 @@
 
         if (answers.employeeType === "new") {
 
-            html += `
-                <div class="alert alert-info">
-
-                    <strong>New Employee:</strong>
-
-                    You are enrolling for the first time.
-                    Your checklist below is based on whether you
-                    want employer health insurance.
-
-                </div>
-            `;
 
 
             /*
@@ -1095,12 +1087,18 @@
                         <div>
 
                             <strong>
-                                Health & Welfare Enrollment Form
+                                Anthem Enrollment Form OR Kaiser Enrollment Form
                             </strong>
 
                             <span>
-                                Complete the enrollment form and select
-                                the health insurance coverage you want.
+                                Complete the enrollment form for the plan you are selecting:
+                                <a href="http://vcsbsa.org/wp-content/uploads/2020/10/FT_20191001_ALL_SISC-HMO-PPO-Enrollment-Form.pdf" target="_blank">
+                                    Anthem Enrollment Form
+                                </a>
+                                &nbsp;OR&nbsp;
+                                <a href="http://vcsbsa.org/wp-content/uploads/2020/10/FT_20191001_ALL_Kaiser-Enrollment-Form.pdf" target="_blank">
+                                    Kaiser Enrollment Form
+                                </a>.
                             </span>
 
                         </div>
@@ -1115,13 +1113,19 @@
                         <div>
 
                             <strong>
-                                Enrollment Form for Your Selected Plan
+                                SISC Membership Form
                             </strong>
 
                             <span>
-                                Complete the enrollment form for the
-                                specific health plan you choose, such
-                                as Kaiser or another available plan.
+                                Complete the
+                                <a href="http://vcsbsa.org/wp-content/uploads/2023/09/SISC-Membership-Change-Form-2023.pdf" target="_blank">
+                                    SISC Membership Form
+                                </a>.
+                                If you are enrolling a spouse or dependent(s), please refer to the
+                                <a href="http://vcsbsa.org/wp-content/uploads/2023/06/Eligibility-Documentation-Checklist-to-Enroll-a-Spouse-or-Dependent.pdf" target="_blank">
+                                    Spouse/Dependent(s) Eligibility Requirements
+                                </a>
+                                for further verification documents needed to enroll a dependent.
                             </span>
 
                         </div>
@@ -1136,12 +1140,15 @@
                         <div>
 
                             <strong>
-                                Acknowledgment Form
+                                Health Benefit Guidelines &amp; Acknowledgement (2026–27)
                             </strong>
 
                             <span>
-                                Complete the applicable acknowledgment
-                                form(s) for the required fiscal year.
+                                Please review the
+                                <a href="http://vcsbsa.org/wp-content/uploads/2026/06/Health-Benefit-Guidelines-Ack-26-27.pdf" target="_blank">
+                                    Health Benefit Guidelines &amp; Acknowledgement
+                                </a>
+                                and <strong>return the last page</strong>.
                             </span>
 
                         </div>
@@ -1161,71 +1168,56 @@
             else {
 
                 html += `
+                    <h3 class="forms-title">Forms to Review</h3>
+                `;
 
-                    <h3 class="forms-title">
-                        Forms to Review
-                    </h3>
-
-
-                    <div class="form-item">
-
-                        <div class="check">✓</div>
-
-                        <div>
-
-                            <strong>
-                                Health & Welfare Waiver Form
-                            </strong>
-
-                            <span>
-                                Complete the waiver indicating that
-                                you are declining employer health insurance.
-                            </span>
-
+                if (answers.hours === "over36") {
+                    html += `
+                        <div class="form-item">
+                            <div class="check">✓</div>
+                            <div>
+                                <strong>Declination of Coverage Form (36+ hrs/week)</strong>
+                                <span>Complete the <a href="https://vcsbsa.org/wp-content/uploads/2026/08/WABE-Employee-Election-Form-2026-27.pdf" target="_blank">WABE Employee Election Form 2026–27</a>.</span>
+                            </div>
                         </div>
-
-                    </div>
-
-
-                    <div class="form-item">
-
-                        <div class="check">✓</div>
-
-                        <div>
-
-                            <strong>
-                                SISC Enrollment Form
-                            </strong>
-
-                            <span>
-                                Complete the applicable SISC enrollment
-                                form required for the waiver process.
-                            </span>
-
+                        <div class="form-item">
+                            <div class="check">✓</div>
+                            <div>
+                                <strong>Copy of Your Insurance Card</strong>
+                                <span>If you fill out this form, please also provide a copy of your insurance card.</span>
+                            </div>
                         </div>
-
-                    </div>
-
-
-                    <div class="form-item">
-
-                        <div class="check">✓</div>
-
-                        <div>
-
-                            <strong>
-                                Acknowledgment Form
-                            </strong>
-
-                            <span>
-                                Complete the applicable acknowledgment
-                                form for the required fiscal year.
-                            </span>
-
+                    `;
+                } else {
+                    html += `
+                        <div class="form-item">
+                            <div class="check">✓</div>
+                            <div>
+                                <strong>Declination of Coverage Form (less than 36 hrs/week)</strong>
+                                <span>Complete the <a href="https://vcsbsa.org/wp-content/uploads/2023/06/Declination-of-Coverage-less-FT-1.pdf" target="_blank">Declination of Coverage — Less Than 36 Hours</a>.</span>
+                            </div>
                         </div>
+                    `;
+                }
 
+                html += `
+                    <div class="alert alert-warning">
+                        <strong>Please return the last page of BOTH Acknowledgements.</strong>
                     </div>
-
+                    <div class="form-item">
+                        <div class="check">✓</div>
+                        <div>
+                            <strong>Health Benefit Guidelines &amp; Acknowledgement (2026–27)</strong>
+                            <span>Review the <a href="http://vcsbsa.org/wp-content/uploads/2026/06/Health-Benefit-Guidelines-Ack-26-27.pdf" target="_blank">Health Benefit Guidelines &amp; Acknowledgement (2026–27)</a> and return the last page.</span>
+                        </div>
+                    </div>
+                    <div class="form-item">
+                        <div class="check">✓</div>
+                        <div>
+                            <strong>Health Benefit Guidelines &amp; Acknowledgement (2025–26)</strong>
+                            <span>Review the <a href="http://vcsbsa.org/wp-content/uploads/2026/06/Health-Benefit-Guidelines-Ack-25-26.pdf" target="_blank">Health Benefit Guidelines &amp; Acknowledgement (2025–26)</a> and return the last page.</span>
+                        </div>
+                    </div>
                 `;
 
             }
